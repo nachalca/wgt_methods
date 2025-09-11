@@ -199,9 +199,12 @@ Applications:
 
 - Scatter plot is related to regression model
 
-- Big discussion on weather use weights in linear models, economist (ignorability assumption )
+- Big discussion on weather use weights in linear models, exogenous sample vs endogenous sample.
 
-- usual methods: fit model with and wothout using weights, compare fits (with a test?) and decide 
+Endogenous sample, R (selected or not in the sample) is independent of $Y$ conditional on a set of $X$ variables
+
+
+- Usual methods: fit model with and wothout using weights, compare fits (with a test?) and decide . NOT SURE IF THEY (EC.) CHECK THIS
 
 <br> 
 
