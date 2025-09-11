@@ -1,19 +1,19 @@
 ---
-title: "fun with Di..."
+title: "Fun with Di..."
 format: revealjs
 ---
 
-## plan
+## Plan
 
-- graphics and survey data 
-
-<br>
-
-- scatterplot with weights 
+- Graphics and survey data 
 
 <br>
 
-- possible things to do 
+- Scatterplots with weights 
+
+<br>
+
+- Possible things to do 
 
 # Graphics and survey data 
 
@@ -24,11 +24,19 @@ format: revealjs
 
 Chapter 4: Graphics 
 
-- Main issue is how to incorporate sampling weights in plots
+Main difficulty in design graphics for complex survey data is representing the sample weights.
 
-- Ok for plot  summaries (bars, boxplots, etc)    
+3 Strategies:
 
-- Challenge: scatter plot, smoothers 
+1. Based the graph on an estimated population distribution. OK  (bars, boxplots, etc)    
+
+2. Explicitly indicate the weights in the graph. 
+
+3. Draw a simple random sample from the estimated population distribution and graph this sample instead.
+
+
+
+Challenge : scatter plot, smoothers 
 
 
 # Scatter plot with weights: papers
