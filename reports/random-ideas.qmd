@@ -1,0 +1,185 @@
+---
+title: "fun with Di..."
+format: revealjs
+---
+
+## plan
+
+- graphics and survey data 
+
+<br>
+
+- scatterplot with weights 
+
+<br>
+
+- possible things to do 
+
+# Graphics and survey data 
+
+## Complex surveys data analysis  
+ Lumley's book 
+
+<br> 
+
+Chapter 4: Graphics 
+
+- Main issue is how to incorporate sampling weights in plots
+
+- Ok for plot  summaries (bars, boxplots, etc)    
+
+- Challenge: scatter plot, smoothers 
+
+
+# Scatter plot with weights: papers
+
+## A few papers .... 
+- Scatterplots with Survey Data. Korn and Graubard 1988. The American Statistician
+
+- Fitting Regression Models to Survey Data. Lumley and Scott 2017. Statistical Science. 
+
+- Scatterplots: Tasks, Data, and Designs. Sarikaya and Gleicher, 2018. IEEE Vis and comp graphics. 
+
+- Generalized Scatter Plots. Hao, Janetzco and Bak 2010. Information visualization. 
+
+## basic/main/suggested options
+
+- buble plot: use weitghs for point size 
+
+<br> 
+
+- transparency: use weights as aplha parameter
+
+<br> 
+
+- hex diagram: use hexbin instead of points
+
+<br> 
+
+- inverse sampling: get a subsample with prob $\propto$ weights 
+
+## Academic performance index (API) data 
+
+The Academic Performance Index is computed for all California schools based on standardised testing of students. The data sets contain information for all schools with at least 100 students and for various probability samples of the data
+
+```{r}
+#| echo: true
+library(survey)
+data(api)
+```
+
+Entire population, simple sample, stratified sample, two phase sample. 
+
+## api 2000 vs parent education
+
+```{r}
+library(patchwork)
+library(tidyverse)
+
+dstrat<-svydesign(id=~1,strata=~stype, weights=~pw, data=apistrat, fpc=~fpc)
+
+rr <-  svyvar(~api00+avg.ed, dstrat) |> as.matrix() |>cov2cor() 
+paste('True Correlation', rr[2,1])
+
+wts <- 1/dstrat$prob 
+
+p6 <- ggplot(apipop) + geom_point(aes(y=api00, x=avg.ed) ) + labs(title='population', x = '', y = '')
+
+ p5 <- ggplot(apistrat) + geom_point(aes(y=api00, x=avg.ed) ) + labs(title='sample', x = '', y = '') 
+
+p2 <- ggplot(apistrat) + geom_point(aes(y=api00, x=avg.ed, size=wts), shape=1 ) + labs(title='bubble', , x = '', y = '')
+
+p3 <- ggplot(apistrat) + geom_point(aes(y=api00, x=avg.ed, alpha=wts)) + labs(title ='transparency', x = '', y = '')
+
+p4 <- ggplot(apistrat, aes(y=api00, x=avg.ed, z=wts)) + stat_summary_hex(  ) + labs(title='hex', x = '', y = '')
+
+ids <- sample(1:nrow(apistrat), replace = TRUE, prob = wts )
+p1 <- ggplot(apistrat) + geom_point(aes(y=api00, x=avg.ed) ) + labs(title='subsampling', x = '', y = '')
+
+(p6 + p1 + p2)/ (p5+p3+p4)  + 
+  plot_layout(guides = "collect", axes = "collect", axis_titles = "collect") & 
+  theme(legend.position = "none")
+
+
+```
+
+
+## api growth vs parent education
+
+```{r}
+
+rr <-  svyvar(~growth+api99, dstrat) |> as.matrix() |>cov2cor() 
+paste('True Correlation', rr[2,1])
+
+wts <- 1/dstrat$prob 
+
+p6 <- ggplot(apipop) + geom_point(aes(y=growth, x=api99) ) + labs(title='population', x = '', y = '')
+
+ p5 <- ggplot(apistrat) + geom_point(aes(y=growth, x=avg.ed) ) + labs(title='sample', x = '', y = '') 
+
+p2 <- ggplot(apistrat) + geom_point(aes(y=growth, x=avg.ed, size=wts), shape=1 ) + labs(title='bubble', , x = '', y = '')
+
+p3 <- ggplot(apistrat) + geom_point(aes(y=growth, x=avg.ed, alpha=wts)) + labs(title ='transparency', x = '', y = '')
+
+p4 <- ggplot(apistrat, aes(y=growth, x=avg.ed, z=wts)) + stat_summary_hex(  ) + labs(title='hex', x = '', y = '')
+
+ids <- sample(1:nrow(apistrat), replace = TRUE, prob = wts )
+p1 <- ggplot(apistrat) + geom_point(aes(y=growth, x=avg.ed) ) + labs(title='subsampling', x = '', y = '')
+
+(p6 + p1 + p2)/ (p5+p3+p4)  + 
+  plot_layout(guides = "collect", axes = "collect", axis_titles = "collect") & 
+  theme(legend.position = "none")
+
+
+```
+
+
+
+# things to try/explore
+
+## compare graphical optoins 
+
+- which scatter plot is better? 
+
+- set up an 'experiment' 
+
+- better for correlation coef? better for Y-X relation? 
+
+- better than test for $H_0)\; \rho=0$ ? 
+
+## construct a new option 
+
+- get an estimate of bivariate $(Y,X)$ distribution 
+
+<br>
+
+- obtain samples from the estimated distribution 
+- plot sampled points 
+
+## high dimensions: tourr plots 
+
+- tourr slice is a scatter plot 
+
+- can we extend options for tours with weights 
+
+<br> 
+
+applications: 
+
+- explore survey data 
+
+- boundary in unbalanced data 
+
+- big data 
+
+## models 
+
+- scatter plot is related to regression model
+
+- big discussion on wether use weights in linear models 
+
+- usual methods: fit model with and wothout using weights, compare fits (with a test?) and decide 
+
+<br> 
+
+Can having residual plot with sampling weigths help? 
