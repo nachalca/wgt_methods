@@ -18,15 +18,11 @@ format: revealjs
 # Graphics and survey data 
 
 ## Complex surveys data analysis  
- Lumley's book 
+Lumley's book, Chapter 4: Graphics 
 
-<br> 
+Main issue to viz complex survey data is representing the sample weights.
 
-Chapter 4: Graphics 
-
-Main difficulty in design graphics for complex survey data is representing the sample weights.
-
-3 Strategies:
+**3 Strategies:**
 
 1. Based the graph on an estimated population distribution. OK  (bars, boxplots, etc)    
 
@@ -36,39 +32,47 @@ Main difficulty in design graphics for complex survey data is representing the s
 
 
 
-Challenge : scatter plot, smoothers 
+Challenge: scatter plot, smoothers 
 
 
 # Scatter plot with weights: papers
 
 ## A few papers .... 
-- Scatterplots with Survey Data. Korn and Graubard 1988. The American Statistician
+- Scatterplots with Survey Data. Korn and Graubard 1998. *The American Statistician*
 
-- Fitting Regression Models to Survey Data. Lumley and Scott 2017. Statistical Science. 
+- Fitting Regression Models to Survey Data. Lumley and Scott 2017. *Statistical Science*. 
 
-- Scatterplots: Tasks, Data, and Designs. Sarikaya and Gleicher, 2018. IEEE Vis and comp graphics. 
+- Scatterplots: Tasks, Data, and Designs. Sarikaya and Gleicher, 2018. *IEEE Vis and comp graphics*. 
 
 - Generalized Scatter Plots. Hao, Janetzco and Bak 2010. Information visualization. 
 
-## basic/main/suggested options
+## Basic/main/suggested options
 
-- buble plot: use weitghs for point size 
+- Bubble plot: use weights for point size (recomended for small data)
 
-<br> 
 
-- transparency: use weights as aplha parameter
 
-<br> 
+- Transparency: use weights in the transparency (alpha) parameter (for large data sets)
 
-- hex diagram: use hexbin instead of points
 
-<br> 
 
-- inverse sampling: get a subsample with prob $\propto$ weights 
+- Hex diagram: use hexbin instead of points (for large data sets)
+
+
+
+- Inverse sampling: get a subsample with prob $\propto$ weights, is aprox a SRS from population
+
+
+## Basic/main/suggested options
+
+There is not an empirical evaluation of the techniques in the context of survey data.
+
+Not sure is this comment is up to date ???
+
 
 ## Academic performance index (API) data 
 
-The Academic Performance Index is computed for all California schools based on standardised testing of students. The data sets contain information for all schools with at least 100 students and for various probability samples of the data
+The Academic Performance Index is computed for all California schools based on standardized testing of students. The data sets contain information for all schools with at least 100 students and for various probability samples of the data.
 
 ```{r}
 #| echo: true
@@ -78,7 +82,7 @@ data(api)
 
 Entire population, simple sample, stratified sample, two phase sample. 
 
-## api 2000 vs parent education
+## Api 2000 vs parent education
 
 ```{r}
 library(patchwork)
@@ -91,18 +95,21 @@ paste('True Correlation', rr[2,1])
 
 wts <- 1/dstrat$prob 
 
-p6 <- ggplot(apipop) + geom_point(aes(y=api00, x=avg.ed) ) + labs(title='population', x = '', y = '')
+p6 <- ggplot(apipop) + geom_point(aes(y = api00, x = avg.ed)) + theme(aspect.ratio = 1)+ labs(title='population', x = '', y = '')
 
- p5 <- ggplot(apistrat) + geom_point(aes(y=api00, x=avg.ed) ) + labs(title='sample', x = '', y = '') 
+ p5 <- ggplot(apistrat) + geom_point(aes(y = api00, x = avg.ed) ) +
+   theme(aspect.ratio = 1)+ labs(title='sample', x = '', y = '') 
 
-p2 <- ggplot(apistrat) + geom_point(aes(y=api00, x=avg.ed, size=wts), shape=1 ) + labs(title='bubble', , x = '', y = '')
+p2 <- ggplot(apistrat) + geom_point(aes(y = api00, x = avg.ed, size = wts), shape = 1 ) + theme(aspect.ratio = 1) + labs(title='bubble', , x = '', y = '')
 
-p3 <- ggplot(apistrat) + geom_point(aes(y=api00, x=avg.ed, alpha=wts)) + labs(title ='transparency', x = '', y = '')
+p3 <- ggplot(apistrat) + geom_point(aes(y = api00, x = avg.ed, alpha = wts)) + theme(aspect.ratio = 1)+ labs(title ='transparency', x = '', y = '')
 
-p4 <- ggplot(apistrat, aes(y=api00, x=avg.ed, z=wts)) + stat_summary_hex(  ) + labs(title='hex', x = '', y = '')
+p4 <- ggplot(apistrat, aes(y = api00, x = avg.ed, z = wts)) +
+  theme(aspect.ratio = 1)+ stat_summary_hex(  ) + labs(title = 'hex', x = '', y = '')
 
 ids <- sample(1:nrow(apistrat), replace = TRUE, prob = wts )
-p1 <- ggplot(apistrat) + geom_point(aes(y=api00, x=avg.ed) ) + labs(title='subsampling', x = '', y = '')
+p1 <- ggplot(apistrat) + geom_point(aes(y = api00, x = avg.ed) ) +
+  theme(aspect.ratio = 1) + labs(title='subsampling', x = '', y = '')
 
 (p6 + p1 + p2)/ (p5+p3+p4)  + 
   plot_layout(guides = "collect", axes = "collect", axis_titles = "collect") & 
@@ -112,27 +119,34 @@ p1 <- ggplot(apistrat) + geom_point(aes(y=api00, x=avg.ed) ) + labs(title='subsa
 ```
 
 
-## api growth vs parent education
+## Api growth vs parent education
 
 ```{r}
 
-rr <-  svyvar(~growth+api99, dstrat) |> as.matrix() |>cov2cor() 
+rr <-  svyvar(~growth + api99, dstrat) |> as.matrix() |> cov2cor() 
 paste('True Correlation', rr[2,1])
 
 wts <- 1/dstrat$prob 
 
-p6 <- ggplot(apipop) + geom_point(aes(y=growth, x=api99) ) + labs(title='population', x = '', y = '')
+p6 <- ggplot(apipop) + geom_point(aes(y = growth, x = api99) ) + 
+  theme(aspect.ratio = 1) + labs(title = 'population', x = '', y = '')
 
- p5 <- ggplot(apistrat) + geom_point(aes(y=growth, x=avg.ed) ) + labs(title='sample', x = '', y = '') 
+ p5 <- ggplot(apistrat) + geom_point(aes(y = growth, x = avg.ed) ) +
+   theme(aspect.ratio = 1) + labs(title='sample', x = '', y = '') 
 
-p2 <- ggplot(apistrat) + geom_point(aes(y=growth, x=avg.ed, size=wts), shape=1 ) + labs(title='bubble', , x = '', y = '')
+p2 <- ggplot(apistrat) + geom_point(aes(y = growth, x = avg.ed, size = wts), shape = 1 ) + theme(aspect.ratio = 1) +
+  labs(title = 'bubble', , x = '', y = '')
 
-p3 <- ggplot(apistrat) + geom_point(aes(y=growth, x=avg.ed, alpha=wts)) + labs(title ='transparency', x = '', y = '')
+p3 <- ggplot(apistrat) + geom_point(aes(y = growth, x = avg.ed, alpha = wts)) + theme(aspect.ratio = 1) +
+  labs(title ='transparency', x = '', y = '')
 
-p4 <- ggplot(apistrat, aes(y=growth, x=avg.ed, z=wts)) + stat_summary_hex(  ) + labs(title='hex', x = '', y = '')
+p4 <- ggplot(apistrat, aes(y = growth, x = avg.ed, z = wts)) +
+  theme(aspect.ratio = 1 ) + stat_summary_hex(  ) + labs(title = 'hex', x = '', y = '')
 
 ids <- sample(1:nrow(apistrat), replace = TRUE, prob = wts )
-p1 <- ggplot(apistrat) + geom_point(aes(y=growth, x=avg.ed) ) + labs(title='subsampling', x = '', y = '')
+p1 <- ggplot(apistrat) + geom_point(aes(y = growth, x = avg.ed) ) +
+  theme(aspect.ratio = 1) +
+  labs(title='subsampling', x = '', y = '')
 
 (p6 + p1 + p2)/ (p5+p3+p4)  + 
   plot_layout(guides = "collect", axes = "collect", axis_titles = "collect") & 
@@ -143,48 +157,49 @@ p1 <- ggplot(apistrat) + geom_point(aes(y=growth, x=avg.ed) ) + labs(title='subs
 
 
 
-# things to try/explore
+# Things to try/explore
 
-## compare graphical optoins 
+## Compare graphical optoins 
 
-- which scatter plot is better? 
+- Which scatter plot is better? 
 
-- set up an 'experiment' 
+- Set up an 'experiment' 
 
-- better for correlation coef? better for Y-X relation? 
+- Which one is better for correlation coef? better for Y-X relation? 
 
-- better than test for $H_0)\; \rho=0$ ? 
+- Better than test for $H_0)\; \rho=0$ ? 
 
-## construct a new option 
+## Construct a new option 
 
-- get an estimate of bivariate $(Y,X)$ distribution 
+- Get an estimate of bivariate $(Y,X)$ distribution 
 
 <br>
 
-- obtain samples from the estimated distribution 
-- plot sampled points 
+- Obtain samples from the estimated bivariate distribution 
 
-## high dimensions: tourr plots 
+- Plot sampled points 
+
+## High dimensions: tourr plots 
 
 - tourr slice is a scatter plot 
 
-- can we extend options for tours with weights 
+- Can we extend options for tours with survey weights ?
 
 <br> 
 
-applications: 
+Applications: 
 
-- explore survey data 
+- Explore survey data 
 
-- boundary in unbalanced data 
+- Boundary in unbalanced data 
 
-- big data 
+- Big data 
 
-## models 
+## Models 
 
-- scatter plot is related to regression model
+- Scatter plot is related to regression model
 
-- big discussion on wether use weights in linear models 
+- Big discussion on weather use weights in linear models, economist (ignorability assumption )
 
 - usual methods: fit model with and wothout using weights, compare fits (with a test?) and decide 
 
