@@ -6,3 +6,5 @@
 *.DS_Store
 *.Rproj
 reports/random-ideas_files/*
+reports/*.pdf
+reports/*.html
