@@ -95,7 +95,11 @@ paste('True Correlation', rr[2,1])
 
 wts <- 1/dstrat$prob 
 
-p6 <- ggplot(apipop) + geom_point(aes(y = api00, x = avg.ed), aplpha=.1) + theme(aspect.ratio = 1)+ labs(title='population', x = '', y = '')
+p6 <- ggplot(apipop) + geom_point(aes(y = api00, x = avg.ed, color=stype), alpha=.1 ) + theme(aspect.ratio = 1)+ labs(title='population', x = '', y = '')
+
+# ggplot(apipop) + geom_point(aes(y = api00, x = avg.ed, color=stype), alpha=.1 ) + 
+#  facet_grid(~stype) + 
+#  labs(title='population', x = '', y = '')
 
  p5 <- ggplot(apistrat) + geom_point(aes(y = api00, x = avg.ed) ) +
    theme(aspect.ratio = 1)+ labs(title='sample', x = '', y = '') 
