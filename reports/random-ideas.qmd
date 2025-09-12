@@ -83,7 +83,7 @@ paste('True Correlation', rr[2,1])
 
 wts <- 1/dstrat$prob 
 
-p6 <- ggplot(apipop) + geom_point(aes(y=api00, x=avg.ed) ) + labs(title='population', x = '', y = '')
+p6 <- ggplot(apipop) + geom_point(aes(y=api00, x=avg.ed), alpha=.1 ) + labs(title='population', x = '', y = '')
 
  p5 <- ggplot(apistrat) + geom_point(aes(y=api00, x=avg.ed) ) + labs(title='sample', x = '', y = '') 
 
