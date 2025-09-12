@@ -95,14 +95,22 @@ paste('True Correlation', rr[2,1])
 
 wts <- 1/dstrat$prob 
 
-p6 <- ggplot(apipop) + geom_point(aes(y = api00, x = avg.ed, color=stype), alpha=.1 ) + theme(aspect.ratio = 1)+ labs(title='population', x = '', y = '')
+p6 <- ggplot(apipop) + geom_point(aes(y = api00, x = avg.ed), alpha=1/50 ) + theme(aspect.ratio = 1)+ labs(title='population', x = '', y = '')
 
 # ggplot(apipop) + geom_point(aes(y = api00, x = avg.ed, color=stype), alpha=.1 ) + 
 #  facet_grid(~stype) + 
 #  labs(title='population', x = '', y = '')
 
- p5 <- ggplot(apistrat) + geom_point(aes(y = api00, x = avg.ed) ) +
-   theme(aspect.ratio = 1)+ labs(title='sample', x = '', y = '') 
+# p5 <- ggplot(apistrat) + geom_point(aes(y = api00, x = avg.ed) ) +
+#   theme(aspect.ratio = 1)+ labs(title='sample', x = '', y = '') 
+
+apistrat.exp <- apistrat |> uncount( round(wts) ) |> 
+  mutate(api00 = api00+rnorm(n(), 0, 20), 
+  avg.ed=avg.ed+rnorm(n(), 0, .2), 
+  growth = growth +rnorm(n(), 0, 12) )
+
+p5 <- ggplot(apistrat.exp) + geom_point(aes(y = api00, x = avg.ed), alpha=1/50) +
+   theme(aspect.ratio = 1)+ labs(title='Exp sample', x = '', y = '') 
 
 p2 <- ggplot(apistrat) + geom_point(aes(y = api00, x = avg.ed, size = wts), shape = 1 ) + theme(aspect.ratio = 1) + labs(title='bubble', , x = '', y = '')
 
@@ -132,11 +140,15 @@ paste('True Correlation', rr[2,1])
 
 wts <- 1/dstrat$prob 
 
-p6 <- ggplot(apipop) + geom_point(aes(y = growth, x = api99) ) + 
+p6 <- ggplot(apipop) + geom_point(aes(y = growth, x = avg.ed), alpha=1/50 ) + 
   theme(aspect.ratio = 1) + labs(title = 'population', x = '', y = '')
 
- p5 <- ggplot(apistrat) + geom_point(aes(y = growth, x = avg.ed) ) +
-   theme(aspect.ratio = 1) + labs(title='sample', x = '', y = '') 
+# p5 <- ggplot(apistrat) + geom_point(aes(y = growth, x = avg.ed) ) +
+#   theme(aspect.ratio = 1) + labs(title='sample', x = '', y = '') 
+
+p5 <- ggplot(apistrat.exp) + geom_point(aes(y = growth, x = avg.ed), alpha=1/50) +
+   theme(aspect.ratio = 1)+ labs(title='Exp sample', x = '', y = '') 
+
 
 p2 <- ggplot(apistrat) + geom_point(aes(y = growth, x = avg.ed, size = wts), shape = 1 ) + theme(aspect.ratio = 1) +
   labs(title = 'bubble', , x = '', y = '')
