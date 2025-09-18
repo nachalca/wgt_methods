@@ -6,6 +6,7 @@
 
 # trying a simulation  ----------------------
 
+
 p = 10
 n = 10000
 gamma = seq(-2,2,length.out=p)
@@ -16,7 +17,7 @@ EX.d = beta%*%X.y
 X.d = EX.d + 0.5*rnorm(n)
 
 q = exp(sin(X.d))/(1+ exp(sin(X.d))) # unequal probability of selection
-Y= sin(gamma%*%X.y)  - 5*EX.d # response 
+Y = sin(gamma%*%X.y)  - 5*EX.d # response 
 
 # I guess the key is Xd impact both Y and q 
 
@@ -24,7 +25,7 @@ dt <- data.frame(Y=as.numeric(Y),
                   Xd = as.numeric(X.d[1,]), 
                   q=q[1,])
 
-ggplot(dt) + geom_point(aes(q, Y, color=q))
+ggplot(dt) + geom_point(aes(Xd, Y, color=q))
 
 
 # Get a SRS from population 
