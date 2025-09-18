@@ -5,6 +5,6 @@
 
 *.DS_Store
 *.Rproj
-reports/random-ideas_files/*
-reports/*.pdf
-reports/*.html
+viz+survey/reports/random-ideas_files/*
+viz+survey/reports/*.pdf
+viz+survey/reports/*.html
